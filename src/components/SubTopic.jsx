@@ -24,19 +24,10 @@ const SubTopic = ({ subTopic, topicId }) => {
   };
 
   const deleteSubTopic = useStore(state => state.deleteSubTopic);
-  const addQuestion = useStore(state => state.addQuestion);
+  const openModal = useStore(state => state.openModal);
 
   const handleAddQuestion = () => {
-      const title = prompt("Enter question title:");
-      if(!title) return;
-      const url = prompt("Enter question URL (optional):");
-      
-      addQuestion(subTopic.id, 'subTopic', {
-          title,
-          url: url || '#',
-          difficulty: 'Medium', // Default
-          status: 'Todo'
-      });
+      openModal('question', subTopic.id, 'subTopic');
       setIsExpanded(true);
   };
 
@@ -81,8 +72,9 @@ const SubTopic = ({ subTopic, topicId }) => {
              <button
                 onClick={handleAddQuestion}
                 className="p-1.5 text-blue-600 hover:bg-blue-50 rounded text-xs font-medium flex items-center gap-1"
+                title="Add Question"
             >
-                <Plus size={14} /> Add Q
+                <Plus size={14} /> <span className="hidden sm:inline">Add Q</span>
             </button>
             <button
             onClick={() => deleteSubTopic(topicId, subTopic.id)}

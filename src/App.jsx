@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import useStore from './store/useStore';
+import Topic from './components/Topic';
+import StatsDashboard from './components/StatsDashboard';
+import { Github, Plus, Loader2 } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -14,13 +18,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import Modal from './components/Modal';
+import Hero from './components/Hero';
 import { processSheetData } from './utils/dataProcessor';
-import useStore from './store/useStore';
-import Topic from './components/Topic';
-import SubTopic from './components/SubTopic';
-import Question from './components/Question';
-import StatsDashboard from './components/StatsDashboard';
-import { Loader2, Plus, Github } from 'lucide-react';
 
 function App() {
   const { 
@@ -29,9 +29,7 @@ function App() {
     reorderTopics, 
     reorderSubTopics, 
     reorderQuestions,
-    addTopic,
-    // We need to access these from store to pass bounds/find parents if needed
-    // or we can rely on data being fresh here
+    openModal,
   } = useStore();
   
   const [loading, setLoading] = useState(true);
@@ -135,14 +133,14 @@ function App() {
     setActiveId(null);
     setActiveItem(null);
   };
-  
+
   const handleAddNewTopic = () => {
-      const title = prompt("Enter new topic name:");
-      if(title) addTopic(title);
+      openModal('topic', null, null);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans text-gray-900 flex flex-col">
+      <Modal />
       <header className="bg-white border-t border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -151,25 +149,28 @@ function App() {
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight text-gray-900 leading-tight">Sheet Manager</h1>
-              <p className="text-xs text-gray-500">Interactive Question Tracker</p>
+              <p className="text-xs text-gray-500 hidden sm:block">Interactive Question Tracker</p>
             </div>
           </div>
           
            <button 
                 onClick={handleAddNewTopic}
                 className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2 shadow-sm"
+                title="New Topic"
             >
-                <Plus size={16} /> New Topic
+                <Plus size={16} /> <span className="hidden sm:inline">New Topic</span>
             </button>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grow w-full">
         {loading ? (
            <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="animate-spin text-blue-500 mb-4" size={40} />
             <p className="text-gray-500 font-medium">Loading your sheet...</p>
           </div>
+        ) : data.length === 0 ? (
+            <Hero />
         ) : (
           <>
             <StatsDashboard />

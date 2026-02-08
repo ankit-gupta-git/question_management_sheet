@@ -160,7 +160,23 @@ const useStore = create((set) => ({
         
         return topic;
       })
-  }))
+  })),
+
+  // Modal State
+  modal: {
+    isOpen: false,
+    type: null, // 'topic', 'subTopic', 'question'
+    parentId: null,
+    parentType: null, // 'topic', 'subTopic'
+  },
+
+  openModal: (type, parentId = null, parentType = null) => set({
+    modal: { isOpen: true, type, parentId, parentType }
+  }),
+
+  closeModal: () => set({
+    modal: { isOpen: false, type: null, parentId: null, parentType: null }
+  })
 }));
 
 export default useStore;

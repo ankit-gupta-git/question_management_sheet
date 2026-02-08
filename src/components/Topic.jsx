@@ -28,8 +28,7 @@ const Topic = ({ topic }) => {
 
   const deleteTopic = useStore(state => state.deleteTopic);
   const editTopic = useStore(state => state.editTopic);
-  const addSubTopic = useStore(state => state.addSubTopic);
-  const addQuestion = useStore(state => state.addQuestion);
+  const openModal = useStore(state => state.openModal);
 
   const handleSaveTitle = () => {
       if (editTitle.trim()) {
@@ -39,24 +38,12 @@ const Topic = ({ topic }) => {
   };
 
   const handleAddSubTopic = () => {
-      const title = prompt("Enter sub-topic title:");
-      if (title) {
-          addSubTopic(topic.id, title);
-          setIsExpanded(true);
-      }
+      openModal('subTopic', topic.id, null);
+      setIsExpanded(true);
   };
 
    const handleAddQuestion = () => {
-      const title = prompt("Enter question title:");
-      if(!title) return;
-      const url = prompt("Enter question URL (optional):");
-      
-      addQuestion(topic.id, 'topic', {
-          title,
-          url: url || '#',
-          difficulty: 'Medium', // Default
-          status: 'Todo'
-      });
+      openModal('question', topic.id, 'topic');
       setIsExpanded(true);
   };
 
@@ -118,14 +105,16 @@ const Topic = ({ topic }) => {
             <button
                 onClick={handleAddSubTopic}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                title="Add Sub-topic"
             >
-                <FolderPlus size={16} /> Sub-topic
+                <FolderPlus size={16} /> <span className="hidden sm:inline">Sub-topic</span>
             </button>
             <button
                 onClick={handleAddQuestion}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                title="Add Question"
             >
-                <FilePlus size={16} /> Question
+                <FilePlus size={16} /> <span className="hidden sm:inline">Question</span>
             </button>
             <div className="w-px h-6 bg-gray-300 mx-1"></div>
             <button
